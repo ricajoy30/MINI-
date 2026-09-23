@@ -1,17 +1,22 @@
 <?php
     session_start();
-    include"../config/database.php";
-    //only admin can access this page. kahit subukan itype sa url mababalik lang sa index
-    if (!isset($_SESSION ["role"]) ||$_SESSION ["role"] != "admin"){
-        header ("Location: ../index.php");
+    include "../config/database.php";
+
+    //validation for admin access only. This check to avoid bypassing the system
+    if(!isset($_SESSION["role"]) || $_SESSION["role"] != "admin"){
+        header("Location: ../index.php");
         exit;
-     }
-     $_students= mysqli_query($conn, "SELECT id FROM users
-      WHERE role= 'student'");
-    $_subjects= mysqli_query($conn, "SELECT id FROM subjects");
-    $_enrollments= mysqli_query($conn, "SELECT id FROM enrollments ");
+    }
+
+    //for counting the student account/ Shortcut na gagawin if isang total lang kinukuha
+    $students = mysqli_query($conn, "SELECT id FROM users WHERE role='student'");
+    $subjects = mysqli_query($conn, "SELECT id FROM subjects");
+    $enrollment = mysqli_query($conn, "SELECT id FROM enrollments");
 
 ?>
+
+
+
 <!doctype html>
 <html lang="en">
 
@@ -64,10 +69,13 @@
         <h2>Admin Dashboard</h2>
 
         <p class="text-muted">
-            Welcome, <?php echo htmlspecialchars($_SESSION["ful_name"]); ?>.
+            Welcome, <?php 
+                echo htmlspecialchars($_SESSION["ful_name"]);
+                //para lang malinis yung name
+            ?>.
         </p>
 
-        <div class="row g-3">
+        <div class="row gg-3">
 
             <!-- Student Accounts -->
             <div class="col-md-4">
@@ -76,10 +84,10 @@
 
                         <h6>Student Accounts</h6>
 
-                        <h2><?php echo mysqli_num_rows($_students); ?></h2>
+                        <h2><?php echo mysqli_num_rows($students) //only filter the number of students?></h2>
 
                         <a
-                            href="students.html"
+                            href="students/index.php"
                             class="btn btn-primary btn-sm"
                         >
                             Manage Students
@@ -96,10 +104,10 @@
 
                         <h6>Subjects</h6>
 
-                        <h2><?php echo mysqli_num_rows($_subjects);?></h2>
+                        <h2><?php echo mysqli_num_rows($subjects) //only filter the number of students?></h2>
 
                         <a
-                            href="subjects.html"
+                            href="subjects/index.php"
                             class="btn btn-primary btn-sm"
                         >
                             Manage Subjects
@@ -116,7 +124,7 @@
 
                         <h6>Enrollments</h6>
 
-                        <h2><?php echo mysqli_num_rows($_enrollments); ?></h2>
+                        <h2><?php echo mysqli_num_rows($enrollment) //only filter the number of students?></h2>
 
                         <span class="text-muted small">
                             Managed from Student Records

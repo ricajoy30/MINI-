@@ -1,3 +1,23 @@
+<?php
+    session_start();
+    include "../../config/database.php";
+
+        //validation for admin access only. This check to avoid bypassing the system
+    if(!isset($_SESSION["role"]) || $_SESSION["role"] != "admin"){
+        header("Location: ../../index.php");
+        exit;
+    }
+    
+    //Para mauna yung higher number, DESCENDING - DESC 
+    //Ginagawa to para mas marami yung ishoshow ng data
+    $sql = "SELECT * FROM users WHERE role='student' ORDER BY id DESC";
+    $result = mysqli_query($conn, $sql);
+
+
+?>
+
+
+
 <!doctype html>
 <html lang="en">
 
@@ -42,21 +62,25 @@
 
     <!-- Main Content -->
     <div class="container py-4">
-
+        <?php
+            if(isset($_GET["message"])){
+        ?>
+            <div class="alert alert-success"><?php echo $_GET["message"];?></div>
+        <?php }?>
         <!-- Header Section -->
         <div class="d-flex justify-content-between mb-3">
 
             <div>
                 <h2>Student Accounts</h2>
 
-                <a href="dashboard.html">
+                <a href="../dashboard.php">
                     ← Dashboard
                 </a>
             </div>
 
             <a
                 class="btn btn-primary"
-                href="student_form.html"
+                href="create.php"
             >
                 + Add Student
             </a>
@@ -81,15 +105,21 @@
                     <tbody>
 
                         <!-- Student Record -->
+                         <?php
+                            //magtrutrue to as long may nakukuha siyang record sa sql.
+                            while($row = mysqli_fetch_assoc($result)){
+                         ?>
+                         
                         <tr>
-                            <td>2026-0001</td>
+                            <!-- Dito naman ginagamit tong para ispecify saan fields kukunin yung mga info. Data from sql-->
+                            <td><?php echo htmlspecialchars($row["student_no"])?></td>
 
                             <td>
-                                Juan Dela Cruz
+                                <?php echo htmlspecialchars($row["full_name"])?>
                             </td>
 
                             <td>
-                                juan
+                                <?php echo htmlspecialchars($row["username"])?>
                             </td>
 
                             <td>
@@ -114,7 +144,9 @@
                                 </button>
                             </td>
                         </tr>
-
+                        <?php
+                            }
+                        ?>
                     </tbody>
 
                 </table>

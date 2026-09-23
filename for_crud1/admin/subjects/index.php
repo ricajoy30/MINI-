@@ -1,3 +1,21 @@
+<?php
+    session_start();
+    include "../../config/database.php";
+
+        //validation for admin access only. This check to avoid bypassing the system
+    if(!isset($_SESSION["role"]) || $_SESSION["role"] != "admin"){
+        header("Location: ../../index.php");
+        exit;
+    }
+    
+    //Para mauna yung higher number, DESCENDING - DESC 
+    //Ginagawa to para mas marami yung ishoshow ng data
+    $sql = "SELECT * FROM subjects";
+    $result = mysqli_query($conn, $sql);
+
+
+?>
+
 <!doctype html>
 <html lang="en">
 
@@ -49,13 +67,13 @@
             <div>
                 <h2>Subjects</h2>
 
-                <a href="dashboard.html">
+                <a href="../dashboard.php">
                     ← Dashboard
                 </a>
             </div>
 
             <a
-                href="subject_form.html"
+                href="create.php"
                 class="btn btn-primary"
             >
                 + Add Subject
@@ -81,15 +99,24 @@
 
                     <tbody>
 
+
                         <!-- Subject Record -->
+                       <?php
+                            //magtrutrue to as long may nakukuha siyang record sa sql.
+                            while($row = mysqli_fetch_assoc($result)){
+                         ?>
+                         
                         <tr>
-                            <td>IT101</td>
+                            <!-- Dito naman ginagamit tong para ispecify saan fields kukunin yung mga info. Data from sql-->
+
+                        <tr>
+                            <td><?php echo htmlspecialchars($row["subject_code"])?></td>
 
                             <td>
-                                Introduction to Computing
+                                <?php echo htmlspecialchars($row["subject_name"])?>
                             </td>
 
-                            <td>3</td>
+                            <td> <?php echo htmlspecialchars($row["units"])?></td>
 
                             <td>
                                 <a
@@ -106,7 +133,9 @@
                                 </button>
                             </td>
                         </tr>
-
+                        <?php
+                            }
+                        ?>
                     </tbody>
 
                 </table>
