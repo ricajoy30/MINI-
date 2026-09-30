@@ -132,13 +132,15 @@
 
                                 <a
                                     class="btn btn-warning btn-sm"
-                                    href="student_form.html"
+                                    href="edit.php?= <?php echo $row['id'] ?>"
                                 >
                                     Edit
                                 </a>
 
                                 <button
                                     class="btn btn-danger btn-sm"
+                                    href="delete.php?id=<?php echo $row ['id'];?>"
+                                    onclick = "return confirm ('Are you sure to delete this record?')"
                                 >
                                     Delete
                                 </button>
